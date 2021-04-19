@@ -1,42 +1,77 @@
 {% extends "layouts.html"%}
-{#진자2는 임포트, 상속 문법#}
 {% block body %}
-<h1 class="display-4">acticles Page</h1>
-<p class="lead">This Application is build using by python and Flask Framework</p>
-<hr class="my-4">
-<table class="table" style="width:100% ">
-    <thead class="thead-dark">
-    <tr>
-        <th>ID</th>
-        <th>TITLE</th>
-        <th>description</th>
-        <th>author</th>
-        <th>date</th>
-    </tr>
-</thead>
-    <tbody>
-    </tbody>
-    {% for article in articles %}
-    <tr>
-        <td>scope="col">{{article['id']}}</th></td>
-        <td>{{article['title']}}</td>
-        <td>{{article['body']}}</td>
-        <td>{{article['Author']}}</td>
-        <td>{{article['title']}}</td>
-    </tr>
-{% endfor %}
-  </table>
- 
-  <style>
-  table, th, td {
-    border: 1px solid black;
-    border-collapse: collapse;
-  }
-  th, td {
-    padding: 5px;
-    text-align: left;
-  }
-  </style>
-<span>{{articles}}</span>
-<a class="btn btn-warning btn-lg" href="#" role="button">Learn more</a>
+    <div class="jumbotron text-center">
+    <h1 class="display-4">ARTICLES PAGE</h1>
+    <p class="lead">This Application is build using by python and Flask Framework</p>
+    <hr class="my-4">
+    <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">id</th>
+            <th scope="col">title</th>
+            <th scope="col">description</th>
+            <th scope="col">author</th>
+            <th scope="col">DATE</th>
+            <th scope="col">EDIT</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for article in articles %}
+          <tr>
+            <th scope="row">{{ article['id'] }}</th>
+            <td><a href = "/article/{{article['id']}}">{{ article['title'] }}</a></td>
+            <td>{{ article['body'] }}</td>
+            <td>{{ article['author'] }}</td>
+            <td>{{ article['create_date'] }}</td>
+            <td><button type="button" class="btn btn-danger">Edit</button></td>
+          </tr>
+           {% endfor %}
+        </tbody>
+      </table>
+      <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table mr-1"></i>
+            DataTable Example
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>TITLE</th>
+                            <th>DESCRIPTION</th>
+                            <th>AUTHOR</th>
+                            <th>DATE</th>
+                            <th>EDIT</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>ID</th>
+                            <th>TITLE</th>
+                            <th>DESCRIPTION</th>
+                            <th>AUTHOR</th>
+                            <th>DATE</th>
+                            <th>EDIT</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                      {% for article in articles %}
+                        <tr>
+                          <th scope="row">{{ article['id'] }}</th>
+                          <td>{{ article['title'] }}</td>
+                          <td>{{ article['body'] }}</td>
+                          <td>{{ article['author'] }}</td>
+                          <td>{{ article['create_date'] }}</td>
+                          <td><button type="button" class="btn btn-danger">Edit</button></td>
+                        </tr>
+                    {% endfor %}
+                      </tbody>
+                    </table>
+                    </div>
+                    </div>
+                    </div>
+                    <a class="btn btn-warning btn-lg" href="#" role="button">Learn more</a>
+  </div>
 {% endblock %}
