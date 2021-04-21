@@ -6,9 +6,9 @@
 <hr class="my-4">
 <form action="/edite" method="post"onsubmit = "return confirm('수정하시겠습니까?')>
 
-  <input type="text" name ="title" required>
-  <input type="text" name ="description" required>
-  <input type="text" name ="author" disabled>
+  <input type="text" name ="title"value = "{{article[1]}}"required>
+  <input type="text" name ="description"value = "{{article[2]}}"required>
+  <input type="text" name ="author" value = "{{article[3]}}"disabled>
   <input type="submit" value="수정">
   
 </form>

@@ -107,24 +107,28 @@ def delete(par_id):
 @app.route('/<int:par_id2>/edit/', methods = ["GET","POST"])
 
 def edit(par_id2):
-#    cursor = db.cursor()
+    cursor = db.cursor()
     if  request.method =="POST":
-        author = request.form['author']
-        title = request.form['title']
-        description = request.form['description']
+        # author = request.form['author']
+        # title = request.form['title']
+        # description = request.form['description']
 
-        sql_1 = "INSERT INTO `topic` (`title`, `body`, `author`) VALUES (%s, %s, %s);"
-        input_data1 = [title, description, author]
-        print(description)
+        # sql_1 = "INSERT INTO `topic` (`title`, `body`, `author`) VALUES (%s, %s, %s);"
+        # input_data1 = [title, description, author]
+        # print(description)
 
-        cursor.execute(sql_1, input_data1)
-        db.commit()
-        print(cursor.rowcount)
+        # cursor.execute(sql_1, input_data1)
+        # db.commit()
+        # print(cursor.rowcount)
         return "success"
         # return redirect("/articles")
         # return "<h1>글쓰기</h1>"
     else :
-        return render_template("edite_articles.html")
+        sql_4 = "SELECT * FROM topic WHERE id = {}".format(par_id2)
+        cursor.execute(sql_4)
+        topic = cursor.fetchone()
+        print(topic[1])
+        return render_template("edite_articles.html", article = topic)
      
 if __name__ == '__main__': ## 처음 서버 띄우는 곳, 초기 실행
     app.run()
