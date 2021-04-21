@@ -1,3 +1,4 @@
+from passlib.hash import sha256_crypt
 from flask import Flask , render_template , request, redirect
 from data import Articles
 import pymysql 
@@ -13,8 +14,7 @@ db = pymysql.connect( #접속환경 설정; 키값 설정 후, 새로운 인스�
     port = 3306,
     user = 'root',
     password = '1234',
-    db = 'busan',
-    charset = 'utf8'
+    db = 'busan'
 )
 
 
@@ -31,12 +31,11 @@ def hello_world():
 @app.route('/index')
 def index():
     return render_template("index.html", hello ="bongsu")
-
 @app.route('/about')
 def about():
     return render_template("about.html", hello ="bongsu")
 
-@app.route('/articles')
+# @app.route('/articles')
 # def articles():
 #     sql = 'SELECT * FROM topic;'
 #     cursor.execute(sql)
@@ -45,7 +44,7 @@ def about():
 #     articles = Articles()
 #     print(articles[0]['title'])
 #     return render_template("articles.html", articles = articles)
-
+@app.route('/articles')
 def articles():
     cursor = db.cursor()
     sql = 'SELECT * FROM topic;'
@@ -109,26 +108,59 @@ def delete(par_id):
 def edit(par_id2):
     cursor = db.cursor()
     if  request.method =="POST":
-        # author = request.form['author']
-        # title = request.form['title']
-        # description = request.form['description']
-
-        # sql_1 = "INSERT INTO `topic` (`title`, `body`, `author`) VALUES (%s, %s, %s);"
-        # input_data1 = [title, description, author]
-        # print(description)
-
-        # cursor.execute(sql_1, input_data1)
-        # db.commit()
-        # print(cursor.rowcount)
-        return "success"
-        # return redirect("/articles")
-        # return "<h1>글쓰기</h1>"
+        # request.form['title','description','author']
+        title = request.form['title']
+        desc = request.form['desc']
+        author = request.form['author']
+        print(author)
+        sql = 'UPDATE topic SET title = %s, body = %s ,author = %s WHERE id = {};'.format(par_id2)
+        
+        input_data = [title, desc, author]
+        cursor.execute(sql, input_data)
+        db.commit()
+        print(request.form['title'])
+        return redirect("/articles")
+        
     else :
-        sql_4 = "SELECT * FROM topic WHERE id = {}".format(par_id2)
-        cursor.execute(sql_4)
+        sql = "SELECT * FROM topic WHERE id = {};".format(par_id2)
+        cursor.execute(sql)
         topic = cursor.fetchone()
-        print(topic[1])
-        return render_template("edite_articles.html", article = topic)
+        # print(topic[1])
+        return render_template("edit_articles.html", article = topic)
+
+@app.route('/register' , methods = ['GET', 'POST'])
+def register():
+  cursor = db.cursor()
+  if request.method == "POST":
+    name = request.form['name']
+    email = request.form['email']
+    username = request.form['username']
+    userpw = sha256_crypt.encrypt(request.form['userpw'])#암호화 
+    sql = "INSERT INTO users (name, email , username, password) VALUES (%s,%s,%s,%s)"
+    input_data = [name ,email , username ,userpw  ]
+    cursor.execute(sql ,input_data)
+    db.commit()
+    return redirect('/articles')
+
+  else:
+
+    return render_template("register.html")
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+  cursor = db.cursor()
+  if request.method == "POST":
+    username = request.form['username']
+    userpw_1 = request.form['userpw']
+    sql = 'SELECT password FROM users WHERE email = %s;'
+    input_data = [usersname]
+    cursor.execute(sql, input_data)
+    userpw = cursor.fetchone()
+    print(userpw[0])
+    if sha256_crypt.verify(userpw_1, userpw[0]):
+      return "SUCCESS"
+    else:
+      return userpw[0]
      
 if __name__ == '__main__': ## 처음 서버 띄우는 곳, 초기 실행
     app.run()
