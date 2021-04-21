@@ -1,6 +1,6 @@
-from passlib.hash import sha256_crypt
 from flask import Flask , render_template , request, redirect
 from data import Articles
+from passlib.hash import sha256_crypt
 import pymysql 
 
 #reder_template html과 만나면 해당 템플릿으로 변환시켜 줌.
@@ -150,17 +150,26 @@ def register():
 def login():
   cursor = db.cursor()
   if request.method == "POST":
-    username = request.form['username']
-    userpw_1 = request.form['userpw']
-    sql = 'SELECT password FROM users WHERE email = %s;'
-    input_data = [usersname]
-    cursor.execute(sql, input_data)
-    userpw = cursor.fetchone()
-    print(userpw[0])
-    if sha256_crypt.verify(userpw_1, userpw[0]):
-      return "SUCCESS"
+    email  = request.form['email']
+    userpw_1  = request.form['userpw']
+    print(email)
+    # print(userpw_1)
+    # print(request.form['username'])
+    sql = 'SELECT * FROM users WHERE email = %s;'
+    input_data = [email]
+    cursor.execute(sql ,input_data)
+    user = cursor.fetchone()
+    print(user)
+    if user == None :
+      print(user)
+      return redirect('/register')
     else:
-      return userpw[0]
+      if sha256_crypt.verify(userpw_1, user[4]):
+        return redirect('/articles')
+      else:
+        return user[4]
+  else:
+    return render_template("login.html")
      
 if __name__ == '__main__': ## 처음 서버 띄우는 곳, 초기 실행
     app.run()
