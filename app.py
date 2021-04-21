@@ -13,7 +13,8 @@ db = pymysql.connect( #접속환경 설정; 키값 설정 후, 새로운 인스�
     port = 3306,
     user = 'root',
     password = '1234',
-    db = 'busan'
+    db = 'busan',
+    charset = 'utf8'
 )
 
 
@@ -77,7 +78,7 @@ def add_articles():
         title = request.form['title']
         description = request.form['description']
 
-        sql = "INSERT INTO `topic` (`title`, `description`, `author`) VALUES (%s, %s, %s);"
+        sql = "INSERT INTO `topic` (`title`, `body`, `author`) VALUES (%s, %s, %s);"
         input_data = [title, description, author]
         print(description)
 
@@ -102,6 +103,29 @@ def delete(par_id):
 
     return redirect("/articles")
 
+
+@app.route('/<int:par_id2>/edit/', methods = ["GET","POST"])
+
+def edit(par_id2):
+#    cursor = db.cursor()
+    if  request.method =="POST":
+        author = request.form['author']
+        title = request.form['title']
+        description = request.form['description']
+
+        sql_1 = "INSERT INTO `topic` (`title`, `body`, `author`) VALUES (%s, %s, %s);"
+        input_data1 = [title, description, author]
+        print(description)
+
+        cursor.execute(sql_1, input_data1)
+        db.commit()
+        print(cursor.rowcount)
+        return "success"
+        # return redirect("/articles")
+        # return "<h1>글쓰기</h1>"
+    else :
+        return render_template("edite_articles.html")
+     
 if __name__ == '__main__': ## 처음 서버 띄우는 곳, 초기 실행
     app.run()
 
